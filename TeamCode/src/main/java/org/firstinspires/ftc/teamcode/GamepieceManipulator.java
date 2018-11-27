@@ -45,7 +45,7 @@ public class GamepieceManipulator extends LinearOpMode {
         //cascadingLift.setDirection(DcMotor.Direction.FORWARD);
 
         midArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        midArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        midArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Status", "waitForStart");
         telemetry.update();
