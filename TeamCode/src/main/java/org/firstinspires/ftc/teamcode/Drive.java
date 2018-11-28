@@ -34,10 +34,10 @@ public class Drive extends LinearOpMode {
         //baseArmMotor = hardwareMap.dcMotor.get("Base arm motor");
         //midArmMotor = hardwareMap.dcMotor.get("Mid arm motor");
         //frontScoopDogMotor = hardwareMap.dcMotor.get("Front scoop dog motor");
-        backScoopDogMotor = hardwareMap.dcMotor.get("Back scoop dog motor");
-        cascadingLift = hardwareMap.dcMotor.get("Cascading lift");
-        rightDriveMotor = hardwareMap.dcMotor.get("Right drive motor");
-        leftDriveMotor = hardwareMap.dcMotor.get("Left drive motor");
+        backScoopDogMotor = hardwareMap.dcMotor.get("Back scoop dog motor");    // port 3
+        cascadingLift = hardwareMap.dcMotor.get("Cascading lift");              // port 2
+        rightDriveMotor = hardwareMap.dcMotor.get("Right drive motor");         // port 0
+        leftDriveMotor = hardwareMap.dcMotor.get("Left drive motor");           // port 1
 
         //baseArmMotor.setDirection(DcMotor.Direction.FORWARD);
         //midArmMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -57,6 +57,8 @@ public class Drive extends LinearOpMode {
         int coreHexCountsPerRev = 288;    // Core Hex encoder output is 288 counts per shaft revolution
         int posn_CascadingLiftExended = hdHex40CountsPerRev * 3;
 
+        boolean liftAsserted = false;
+
         waitForStart();
 
         while (opModeIsActive()){
@@ -74,18 +76,14 @@ public class Drive extends LinearOpMode {
                 telemetry.update();
                 while (cascadingLift.isBusy()) {}
             }
-            else{
-                // motor hold if extended
-                cascadingLift.setPower(1);
-            }
-            if (gamepad1.left_bumper == true){
+            else if (gamepad1.left_bumper == true){
                 cascadingLift.setTargetPosition(0);
                 cascadingLift.setPower(-1);
                 telemetry.addData("cascadingLift to: ", "0");
                 telemetry.update();
                 while (cascadingLift.isBusy()) {}
             }
-            else{
+            else{           // change this to set power to 1 if the lift has been pulled in to lift the robot up 
                 cascadingLift.setPower(0);
             }
 
