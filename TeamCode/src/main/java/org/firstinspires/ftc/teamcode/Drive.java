@@ -55,7 +55,11 @@ public class Drive extends LinearOpMode {
 
         int hdHex40CountsPerRev = 2240;   // HD Hex 40:1 encoder output is 2240 counts per shaft revolution
         int coreHexCountsPerRev = 288;    // Core Hex encoder output is 288 counts per shaft revolution
-        int posn_CascadingLiftExended = hdHex40CountsPerRev * 3;
+
+        float liftTravelDistance = 4.75;    // change this to adjust travel distance for lift
+
+        int countsPerInch = int(hdHex40CountsPerRev * 1.0);
+        int posn_CascadingLiftExended = int(countsPerInch * liftTravelDistance);
 
         boolean liftAsserted = false;
 
@@ -65,25 +69,26 @@ public class Drive extends LinearOpMode {
             telemetry.addData("Status", "Initialized");
             telemetry.update();
 
-            rightDriveMotor.setPower(gamepad1.right_stick_y*1);
-            leftDriveMotor.setPower(gamepad1.left_stick_y*1);
+            // drive motor controls: joysticks
+            rightDriveMotor.setPower(gamepad1.right_stick_y * 1);
+            leftDriveMotor.setPower(gamepad1.left_stick_y * 1);
 
             // cascading lift control:
             if (gamepad1.right_bumper == true){
                 cascadingLift.setTargetPosition(posn_CascadingLiftExended);
-                cascadingLift.setPower(1);
+                cascadingLift.setPower(0.2);
                 telemetry.addData("cascadingLift to: ", posn_CascadingLiftExended);
                 telemetry.update();
                 while (cascadingLift.isBusy()) {}
             }
             else if (gamepad1.left_bumper == true){
-                cascadingLift.setTargetPosition(0);
-                cascadingLift.setPower(-1);
+                cascadingLift.setTargetPosition(0)
+                cascadingLift.setPower(-0.2);
                 telemetry.addData("cascadingLift to: ", "0");
                 telemetry.update();
                 while (cascadingLift.isBusy()) {}
             }
-            else{           // change this to set power to 1 if the lift has been pulled in to lift the robot up 
+            else{           // change this to set power to 1 if the lift has been pulled in to lift the robot up
                 cascadingLift.setPower(0);
             }
 
