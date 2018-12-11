@@ -75,7 +75,7 @@ public class TestBenchAutonomous extends LinearOpMode {
         telemetry.update();
 
         if (liftHomeSensor.getState() == true) {
-            telemetry.addData("cascadingLift sensor: ", "lift sensor not detected :-(   Searching...");
+            telemetry.addData("cascadingLift sensor: ", "Lift sensor not detected :-(   Searching...");
             telemetry.update();
             cascadingLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             // Retract until the sensor is located
@@ -83,6 +83,8 @@ public class TestBenchAutonomous extends LinearOpMode {
             // continue to run until we find the home sensor, then reset the encoder and proceed
             while (liftHomeSensor.getState() == true);
             cascadingLift.setPower(0);
+            telemetry.addData("cascadingLift sensor: ", "Lift home position located!");
+            telemetry.update();
         }
         // the lift should now be at the home sensor
         if (liftHomeSensor.getState() == false) {
