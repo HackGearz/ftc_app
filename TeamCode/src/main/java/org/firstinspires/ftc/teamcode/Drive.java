@@ -56,10 +56,10 @@ public class Drive extends LinearOpMode {
         int hdHex40CountsPerRev = 2240;   // HD Hex 40:1 encoder output is 2240 counts per shaft revolution
         int coreHexCountsPerRev = 288;    // Core Hex encoder output is 288 counts per shaft revolution
 
-        float liftTravelDistance = 4.75;    // change this to adjust travel distance for lift
+        float liftTravelDistance = 4.75f;    // change this to adjust travel distance for lift
 
-        int countsPerInch = int(hdHex40CountsPerRev * 1.0);
-        int posn_CascadingLiftExended = int(countsPerInch * liftTravelDistance);
+        int countsPerInch = (int)(hdHex40CountsPerRev * 1.0f);
+        int posn_CascadingLiftExended = (int)(countsPerInch * liftTravelDistance);
 
         boolean liftAsserted = false;
 
@@ -79,14 +79,14 @@ public class Drive extends LinearOpMode {
                 cascadingLift.setPower(0.2);
                 telemetry.addData("cascadingLift to: ", posn_CascadingLiftExended);
                 telemetry.update();
-                while (cascadingLift.isBusy()) {}
+                //while (cascadingLift.isBusy()) {}
             }
             else if (gamepad1.left_bumper == true){
-                cascadingLift.setTargetPosition(0)
+                cascadingLift.setTargetPosition(0);
                 cascadingLift.setPower(-0.2);
                 telemetry.addData("cascadingLift to: ", "0");
                 telemetry.update();
-                while (cascadingLift.isBusy()) {}
+                //while (cascadingLift.isBusy()) {}
             }
             else{           // change this to set power to 1 if the lift has been pulled in to lift the robot up
                 cascadingLift.setPower(0);
