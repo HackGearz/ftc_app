@@ -20,6 +20,17 @@ public class TestBench extends LinearOpMode {
 
     DigitalChannel liftHomeSensor;  // Hardware Device Object
 
+    static final int HDHEX40COUNTS_PER_REV = 2240;   // HD Hex 40:1 encoder output is 2240 counts per shaft revolution
+    static final int COREHEXCOUNTS_PER_REV = 288;    // Core Hex encoder output is 288 counts per shaft revolution
+
+    static final int[] COUNTS_PER_REV = new int[] {COREHEXCOUNTS_PER_REV, HDHEX40COUNTS_PER_REV};
+    static final int COREHEX_MOTOR = 0;
+    static final int HDHEX40_MOTOR = 1;
+
+    static final float LIFT_TRAVEL_DISTANCE_INCHES = 4.5f;    // change this to adjust travel distance for lift
+
+    static final int COUNTS_PER_INCH = (int)(COUNTS_PER_REV[HDHEX40_MOTOR] * 1.0f);
+    static final int POSN_CASCADING_LIFT_EXENDED = (int)(COUNTS_PER_INCH * LIFT_TRAVEL_DISTANCE_INCHES);
 
     //    @Override
     public void runOpMode() {
@@ -52,21 +63,10 @@ public class TestBench extends LinearOpMode {
         //cascadingLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         cascadingLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        int hdHex40CountsPerRev = 2240;   // HD Hex 40:1 encoder output is 2240 counts per shaft revolution
-        int coreHexCountsPerRev = 288;    // Core Hex encoder output is 288 counts per shaft revolution
-
-        int[] countsPerRev = new int[] {coreHexCountsPerRev, hdHex40CountsPerRev};
-        int coreHexMotor = 0;
-        int hdHex40Motor = 1;
-
-        float liftTravelDistanceInches = 2.0f;    // change this to adjust travel distance for lift
-
         // select the motor
         // int countsPerInch = (int)(hdHex40CountsPerRev * 1.0f);
 
         // select the motor type here: creexMotor or hdHex40motor
-        int countsPerInch = (int)(countsPerRev[coreHexMotor] * 1.0f);
-        int posn_CascadingLiftExended = (int)(countsPerInch * liftTravelDistanceInches);
 
         boolean liftHomeKnown = false;
 
@@ -104,10 +104,14 @@ public class TestBench extends LinearOpMode {
                 // cascading lift control:
                 // when the lift home has been located and the right bumper pressed
                 if (gamepad1.right_bumper == true) {
-                    cascadingLift.setTargetPosition(posn_CascadingLiftExended);
+                    cascadingLift.setTargetPosition(POSN_CASCADING_LIFT_EXENDED);
                     cascadingLift.setPower(0.2);
-                    telemetry.addData("cascadingLift to: ", posn_CascadingLiftExended);
+                    telemetry.addData("cascadingLift to: ", POSN_CASCADING_LIFT_EXENDED);
                     telemetry.update();
+                    //while (cascadingLift.isBusy()) {
+                    //    telemetry.addData("cascadingLift position: ", cascadingLift.getCurrentPosition());
+                    //    telemetry.update();
+                    //}
                 }
                 // as long as the lift is not at the home position then it's OK to move that direction
                 else if ((gamepad1.left_bumper == true) && (liftHomeSensor.getState() == true)) {
@@ -115,23 +119,27 @@ public class TestBench extends LinearOpMode {
                     cascadingLift.setPower(-0.3);
                     telemetry.addData("cascadingLift to: ", "0");
                     telemetry.update();
+                    //while (cascadingLift.isBusy()) {
+                    //    telemetry.addData("cascadingLift position: ", cascadingLift.getCurrentPosition());
+                    //    telemetry.update();
+                    //}
                 }
 
                 if (gamepad1.y == true) {
-                    cascadingLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    cascadingLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     cascadingLift.setPower(-0.25);
                     while (gamepad1.y == true) ;
                 }
                 if (gamepad1.a == true) {
-                    cascadingLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    cascadingLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     cascadingLift.setPower(0.25);
                     while (gamepad1.a == true) ;
                 }
 
                 if (gamepad1.x == true) {
                     cascadingLift.setPower(0);
-                    cascadingLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    cascadingLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    //cascadingLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    //cascadingLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
 
 
@@ -148,7 +156,6 @@ public class TestBench extends LinearOpMode {
                 else {
                     backScoopDogMotor.setPower(0);
             }
-*/
             }
         }
     }
